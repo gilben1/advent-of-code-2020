@@ -2,18 +2,22 @@ import re
 
 def parse_line(line):
     # pull out the upper and lower bounds
-    lower,upper = map(int, re.findall(r'\d+', line))
+    first_index,second_index = map(int, re.findall(r'\d+', line))
     key = line.split(' ')[1][0]
     password = line.split(' ')[2]
 
-    return lower,upper,key,password
+    return first_index,second_index,key,password
 
 def valid_pass_unpack(tup):
     return valid_pass(*tup)
 
-def valid_pass(lower, upper, key, password):
-    count = password.count(key)
-    return count >= lower and count <= upper
+def valid_pass(first_index, second_index, key, password):
+    if first_index - 1 >= len(password) or second_index - 1 >= len(password):
+        return False
+
+    first_char = password[first_index - 1] == key
+    second_char = password[second_index - 1] == key
+    return first_char ^ second_char
 
 with open("./input.txt", "r") as fp:
     input_string = fp.read()
